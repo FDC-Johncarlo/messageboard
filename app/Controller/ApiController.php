@@ -9,15 +9,15 @@ class ApiController extends AppController
         // check the request if post
         if ($this->request->is("post")) {
             // load the usersmodel
-            $this->loadModel("UsersModel");
+            $this->loadModel("RegisterModel");
 
             $data = $this->request->data;
-            $this->UsersModel->set($data);
+            $this->RegisterModel->set($data);
 
-            if ($this->UsersModel->validates()) {
+            if ($this->RegisterModel->validates()) {
              
             } else {
-                $errors = $this->UsersModel->validationErrors;
+                $errors = $this->RegisterModel->validationErrors;
                 // Handle the validation errors
             }
           

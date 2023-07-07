@@ -30,10 +30,10 @@ App::uses('Model', 'Model');
  *
  * @package       app.Model
  */
-class UsersModel extends AppModel
+class RegisterModel extends AppModel
 {
     public $useTable = "users";
-    // // for registration validation
+    // for registration validation
 
     public $validate = array(
         "name" => array(
