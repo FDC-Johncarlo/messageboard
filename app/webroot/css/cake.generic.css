@@ -1,0 +1,88 @@
+@charset "utf-8";
+/**
+ * Generic CSS for CakePHP
+ *
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
+ * @package       app.webroot.css
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
+ */
+@import url('https://fonts.googleapis.com/css2?family=Karla:wght@500&display=swap');
+
+* {
+	margin:0;
+	padding:0;
+}
+
+/** General Style Info **/
+body {
+	/* font-family:'lucida grande',verdana,helvetica,arial,sans-serif; */
+	font-family: 'Karla', sans-serif;
+	font-size:90%;
+	margin: 0;
+}
+
+#container {
+	width: 100%;
+	max-width: 1100px;
+	margin: auto;
+}
+
+footer{
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.input-group input{
+	width: calc(100% - 22px);
+	font-family: inherit;
+	padding: 10px;
+	border-radius: 3px;
+	border: 1px solid #eaeaea;
+	margin: 4px 0px;
+}
+
+/* Login page */
+#content.login, #content.register{
+	display: grid;
+	place-items: center;
+	height: calc(100vh - 50px);
+}
+
+.child-content{
+	width: 100%;
+	max-width: 370px;
+}
+
+.login h1:nth-child(1), .register h1:nth-child(1){
+	text-transform: uppercase;
+}
+
+.login p:nth-child(2), .register p:nth-child(2) {
+	font-size: 14px;
+	color: gray;
+	margin-bottom: 30px;
+}
+
+.login button, .register button{
+	width: 100%;
+	background-color: black;
+	border-radius: 3px;
+	border: none;
+	color: white;
+	padding: 12px 10px;
+	font-family: inherit;
+	margin-top: 20px;
+}
+
+.login p:last-child, .register p:last-child{
+	text-align: center;
+	margin-top: 50px;
+}
