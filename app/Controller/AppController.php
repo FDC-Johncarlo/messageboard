@@ -36,10 +36,4 @@ class AppController extends Controller {
         print_r($Message);
         exit;
     }
-    public function responser($Status, $Message){
-        $response["status"] = $Status;
-        $response["message"] = $Message;
-        echo json_encode($response);
-        return;
-    }
 }

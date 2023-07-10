@@ -1,6 +1,7 @@
 <div class="child-content">
     <h1>Message Board</h1>
     <p>Log in to continue!</p>
+    <div class="error-message"></div>
     <form id="login">
         <div class="input-group">
             <input type="email" class="form-control" placeholder="E-mal" name="email">

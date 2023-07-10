@@ -47,10 +47,9 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 			<?php echo $this->fetch('content'); ?>
 		</div>
 		<footer>
-			<p>2023 All right reserved</p>
+			<!-- <p>2023 All right reserved</p> -->
 		</footer>
 	</div>
-	<?php echo $this->element('sql_dump'); ?>
 
 	<?php
 		echo $this->Html->script('plugins/jquery/dist/jquery.min.js');

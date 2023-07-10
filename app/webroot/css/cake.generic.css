@@ -16,16 +16,24 @@
  */
 @import url('https://fonts.googleapis.com/css2?family=Karla:wght@500&display=swap');
 
+:root {
+
+	---primary: black;
+	---secondary: gray;
+
+	---default: white;
+}
+
 * {
-	margin:0;
-	padding:0;
+	margin: 0;
+	padding: 0;
 }
 
 /** General Style Info **/
 body {
 	/* font-family:'lucida grande',verdana,helvetica,arial,sans-serif; */
 	font-family: 'Karla', sans-serif;
-	font-size:90%;
+	font-size: 90%;
 	margin: 0;
 }
 
@@ -35,12 +43,12 @@ body {
 	margin: auto;
 }
 
-footer{
+footer {
 	text-align: center;
 	text-transform: uppercase;
 }
 
-.input-group input{
+.input-group input {
 	width: calc(100% - 22px);
 	font-family: inherit;
 	padding: 10px;
@@ -49,40 +57,267 @@ footer{
 	margin: 4px 0px;
 }
 
-/* Login page */
-#content.login, #content.register{
+/* Login & Register page */
+#content.login,
+#content.register,
+#content.success {
 	display: grid;
 	place-items: center;
 	height: calc(100vh - 50px);
 }
 
-.child-content{
+.child-content {
 	width: 100%;
 	max-width: 370px;
 }
 
-.login h1:nth-child(1), .register h1:nth-child(1){
+.login h1:nth-child(1),
+.register h1:nth-child(1) {
 	text-transform: uppercase;
 }
 
-.login p:nth-child(2), .register p:nth-child(2) {
+.login p:nth-child(2),
+.register p:nth-child(2) {
 	font-size: 14px;
-	color: gray;
+	color: var(---secondary);
 	margin-bottom: 30px;
 }
 
-.login button, .register button{
+.login button,
+.register button {
 	width: 100%;
-	background-color: black;
+	background-color: var(---primary);
 	border-radius: 3px;
 	border: none;
-	color: white;
+	color: var(---default);
 	padding: 12px 10px;
 	font-family: inherit;
 	margin-top: 20px;
 }
 
-.login p:last-child, .register p:last-child{
+.login p:last-child,
+.register p:last-child {
 	text-align: center;
 	margin-top: 50px;
+}
+
+.error-message {
+	background: #f7f6f7;
+	padding: 13px 24px;
+	border-top: 2px solid #db3c3c;
+	line-height: 21px;
+	display: none;
+}
+
+.error-message ul li {
+	list-style: none;
+	font-size: 13px;
+	color: #db3c3c;
+}
+
+
+/* for success page */
+.success .verbiage {
+	text-align: center;
+	margin-top: 50px;
+	line-height: 23px;
+}
+
+.success .verbiage h1 {
+	font-size: 20px;
+	text-transform: uppercase;
+	margin-bottom: 10px;
+}
+
+.success .verbiage p {
+	color: var(---secondary);
+}
+
+.success .verbiage a {
+	text-decoration: none;
+	background-color: var(---primary);
+	color: var(---default);
+	padding: 8px 20px;
+	border-radius: 3px;
+	display: inline-block;
+	margin-top: 30px;
+}
+
+.success-animation {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.checkmark {
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+	display: block;
+	stroke-width: 2;
+	stroke: #4bb71b;
+	stroke-miterlimit: 10;
+	box-shadow: inset 0px 0px 0px #4bb71b;
+	animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+	position: relative;
+}
+
+.checkmark__circle {
+	stroke-dasharray: 166;
+	stroke-dashoffset: 166;
+	stroke-width: 2;
+	stroke-miterlimit: 10;
+	stroke: #4bb71b;
+	fill: #fff;
+	animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+
+}
+
+.checkmark__check {
+	transform-origin: 50% 50%;
+	stroke-dasharray: 48;
+	stroke-dashoffset: 48;
+	animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+	100% {
+		stroke-dashoffset: 0;
+	}
+}
+
+@keyframes scale {
+
+	0%,
+	100% {
+		transform: none;
+	}
+
+	50% {
+		transform: scale3d(1.1, 1.1, 1);
+	}
+}
+
+@keyframes fill {
+	100% {
+		box-shadow: inset 0px 0px 0px 30px #4bb71b;
+	}
+}
+
+/* Home Css */
+#content.home,
+#content.profile {
+	width: 100%;
+	max-width: 800px;
+	height: calc(100vh - 200px);
+	padding: 80px 0px;
+	margin: auto;
+}
+
+.home .wrapper,
+.profile .wrapper {
+	position: relative;
+}
+
+.home .wrapper h1,
+.profile .wrapper h1 {
+	text-transform: uppercase;
+}
+
+.mini-nav {
+	position: absolute;
+	right: 0px;
+	top: 27px;
+}
+
+.mini-nav ul li:not(:last-child)::after {
+	content: "|";
+	display: inline-block;
+	font-size: 10px;
+	margin: 10px;
+}
+
+.breadcrumb {
+	margin: 30px 0px;
+}
+
+.breadcrumb ul li,
+.mini-nav ul li {
+	list-style: none;
+	display: inline-block;
+}
+
+.breadcrumb ul li:not(:last-child)::after {
+	content: "/";
+	display: inline-block;
+	font-size: 10px;
+	margin: 10px;
+}
+
+.divider {
+	border: none;
+	border-top: 1px solid #ececec;
+	margin-top: -20px;
+	padding: 0px 10px;
+}
+
+
+.profile .container div.right table {
+	width: 100%;
+}
+
+.profile .container div.right table td {
+	padding: 18px 5px;
+}
+
+.gender-area label {
+	margin: 0px 8px;
+	display: inline-block;
+}
+
+.gender-area label input {
+	position: relative;
+	right: 5px;
+}
+
+table input[name="name"],
+table input[name="birthdate"],
+table textarea[name="hubby"] {
+	padding: 10px;
+	border-radius: 3px;
+	border: 1px solid #eaeaea;
+	width: 100%;
+	max-width: 300px;
+	font-family: inherit !important;
+}
+
+table button {
+	font-family: inherit;
+	padding: 10px 40px;
+	border: none;
+	color: var(---default);
+	background-color: var(---primary);
+	border-radius: 3px;
+}
+
+.profile .left img {
+	width: 150px;
+	height: 150px;
+	object-fit: cover;
+}
+
+.profile .left {
+	margin: 20px 0px;
+}
+
+.profile .left>label {
+	display: block;
+	text-decoration: underline;
+	margin: 5px;
+	cursor: pointer;
+	width: fit-content;
+}
+
+.profile .left>label>input {
+	display: none;
 }

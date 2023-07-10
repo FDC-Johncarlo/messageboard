@@ -1,6 +1,6 @@
 
 // base url on js side
-const base_url = window.origin + "/message-board/";
+const base_url = window.origin + "/messageboard/";
 
 // reusable ajax request
 function Ajax(path, data) {
@@ -16,7 +16,7 @@ function Ajax(path, data) {
             res = JSON.parse(response);
         },
         error: function (xhr) {
-            alert("ERROR, an error has occured while performing you request!");
+            alert("An error has occured while performing you request!");
         },
     });
     return res;

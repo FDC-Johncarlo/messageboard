@@ -19,7 +19,7 @@
  */
 
 App::uses('AppController', 'Controller');
-
+App::uses('CakeSession', 'Model/Datasource');
 /**
  * Static content controller
  *
@@ -46,7 +46,12 @@ class PagesController extends AppController {
  *   or MissingViewException in debug mode.
  */
 	public function display() {
+
 		$path = func_get_args();
+
+		if($path[0] == "profile"){
+			$this->profile();
+		}
 
 		$count = count($path);
 		if (!$count) {
@@ -77,4 +82,55 @@ class PagesController extends AppController {
 			throw new NotFoundException();
 		}
 	}
-}
+
+	public function profile(){
+		# Get the all current session
+		$sessionData = CakeSession::read();
+		# Check if the session users index are isset
+		if(isset($sessionData["Users"])){
+			# Get the id from Session
+			$user_id = $sessionData["Users"]["data"]["id"];
+
+			# Initialize the Login Model
+			$this->loadModel("LoginModel");
+
+			# Select only the following array for joining
+			$columns = [
+				"LoginModel.name",
+				"UsersData.birth_date",
+				"UsersData.gender",
+				"UsersData.hubby",
+				"UsersData.profile",
+			];
+			
+			# Perform the JOIN operation between 2 table Users:LoginModel & users_data as UsersData
+			$records = $this->LoginModel->find("all", array(
+				"fields" => $columns,
+				"joins" => array(
+					array(
+						"table" => "users_data",
+						"alias" => "UsersData", // Add the table alias
+						"conditions" => array(
+							"LoginModel.id = UsersData.fk_id"
+						)
+					)
+				),
+				"conditions" => array("LoginModel.id" => $user_id)
+			));
+
+			# Check if the records joined is not empty
+			if(empty($records)){
+				# If the records is not yet in the database
+				$result["status"] = false;
+				$result["userInfo"] = $sessionData["Users"]["data"];
+			}else{
+				# Joined 2 table columns
+				$result["userInfo"] = array_merge($records[0]["LoginModel"], $records[0]["UsersData"]);
+				$result["status"] = true;
+			}
+
+			# Set a profile variable so that we can access this variable to pages
+			$this->set("profile", $result);
+		}
+	}
+} # End of the class

@@ -25,11 +25,19 @@
  * its action called 'display', and we pass a param to select the view file
  * to use (in this case, /app/View/Pages/home.ctp)...
  */
+	// Routes that will handle the pages for Unthenticate Users
 	Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'login'));
+	Router::connect('/login', array('controller' => 'pages', 'action' => 'display', 'login'));
 	Router::connect('/register', array('controller' => 'pages', 'action' => 'display', 'register'));
+	Router::connect('/success-registration', array('controller' => 'pages', 'action' => 'display', 'success'));
 
-	// API END POINT
+	// Routes that will handle the pages for Authenticated Users
+	Router::connect('/home', array('controller' => 'pages', 'action' => 'display', 'home'));
+	Router::connect('/my-profile', array('controller' => 'pages', 'action' => 'display', 'profile'));
+
+	// Routes that will handle the API END POINT
 	Router::connect('/api/register', array('controller' => 'api', 'action' => 'register'));
+	Router::connect('/api/login', array('controller' => 'api', 'action' => 'login'));
 /**
  * ...and connect the rest of 'Pages' controller's URLs.
  */
