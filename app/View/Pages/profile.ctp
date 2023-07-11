@@ -1,13 +1,7 @@
 <div class="wrapper">
     <span>Welcome To</span>
     <h1>Message Board</h1>
-    <div class="mini-nav">
-        <nav>
-            <ul>
-                <li><a href="javascript:;" class="logout">Logout</a></li>
-            </ul>
-        </nav>
-    </div>
+    <?php echo $this->element('nav'); ?>
     <div class="breadcrumb">
         <ul>
             <li><a href="<?= Configure::read("BASE_URL") ?>/home">Home</a></li>
@@ -15,12 +9,26 @@
         </ul>
     </div>
     <hr class="divider">
+    <div class="error-message"></div>
     <div class="container">
-        <form id="update-profile">
+        <form id="profile">
             <div class="left">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTox0g5LHtUBM-9I8EJJ1Ea7gfwlT60RkzmUL0lXcQ&s" alt="Profile Picture">
+                <?php
+                # Check if the status has joined
+                if ($profile["status"]) {
+                    # Also check if the user has profile uploaded or null
+                    if ($profile["userInfo"]["profile"] == NULL) { ?>
+                        <img src="<?= Configure::read("BASE_URL") ?>/app/webroot/img/default.png" alt="Default Profile Picture" id="preview-here">
+                    <?php } else { # Set only to default 
+                    ?>
+                        <img src="<?= Configure::read("BASE_URL") ?>/app/webroot/uploads/profile/<?= $profile["userInfo"]["profile"] ?>" alt="Profile Picture" id="preview-here">
+                    <?php } ?>
+                <?php } else { # Set only to default 
+                ?>
+                    <img src="<?= Configure::read("BASE_URL") ?>/app/webroot/img/default.png" alt="Default Profile Picture" id="preview-here">
+                <?php } ?>
                 <label for="preiviewer">
-                    <input type="file" id="preiviewer" name="profile">
+                    <input type="file" id="preiviewer" name="profile" accept=".jpg, .gif, .png">
                     Select Profile
                 </label>
             </div>
@@ -35,28 +43,39 @@
                     <tr>
                         <td>Birthdate</td>
                         <td>
-                            <input type="date" name="birthdate" value="<?= $profile["status"] ? $profile["userInfo"]["birth_date"] : "" ?>">
+                            <input type="text" name="birthdate" value="<?= $profile["status"] ? $profile["userInfo"]["birth_date"] : "" ?>">
                         </td>
                     </tr>
                     <tr>
                         <td>Gender</td>
                         <td>
                             <div class="gender-area">
-                                <label for="male">
-                                    <input type="radio" name="gender" value="Male" id="male" <?= !$profile["status"] ? "" : ($profile["userInfo"]["gender"] == "Male" ? "checked" : "") ?>>
-                                    Male
-                                </label>
-                                <label for="female">
-                                    <input type="radio" name="gender" value="Female" id="female" <?= !$profile["status"] ? "" : ($profile["userInfo"]["gender"] == "Female" ? "checked" : "") ?>>
-                                    Female
-                                </label>
+                                <?php if (!$profile["status"]) { ?>
+                                    <label for="male">
+                                        <input type="radio" name="gender" value="Male" id="male" checked>
+                                        Male
+                                    </label>
+                                    <label for="female">
+                                        <input type="radio" name="gender" value="Female" id="female">
+                                        Female
+                                    </label>
+                                <?php } else { ?>
+                                    <label for="male">
+                                        <input type="radio" name="gender" value="Male" id="male" <?= $profile["userInfo"]["gender"] == "Male" ? "checked" : "" ?>>
+                                        Male
+                                    </label>
+                                    <label for="female">
+                                        <input type="radio" name="gender" value="Female" id="female" <?= $profile["userInfo"]["gender"] == "Female" ? "checked" : "" ?>>
+                                        Female
+                                    </label>
+                                <?php } ?>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td>Hubby</td>
                         <td>
-                            <textarea name="hubby" cols="30" rows="10"> <?= $profile["status"] ? $profile["userInfo"]["hubby"] : "" ?></textarea>
+                            <textarea name="hubby" cols="30" rows="10"><?= $profile["status"] ? $profile["userInfo"]["hubby"] : "" ?></textarea>
                         </td>
                     </tr>
                     <tr>

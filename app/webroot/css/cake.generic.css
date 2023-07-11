@@ -27,12 +27,12 @@
 * {
 	margin: 0;
 	padding: 0;
+	font-family: 'Karla', sans-serif;
 }
 
 /** General Style Info **/
 body {
 	/* font-family:'lucida grande',verdana,helvetica,arial,sans-serif; */
-	font-family: 'Karla', sans-serif;
 	font-size: 90%;
 	margin: 0;
 }
@@ -206,7 +206,7 @@ footer {
 
 /* Home Css */
 #content.home,
-#content.profile {
+#content.profile, #content.account{
 	width: 100%;
 	max-width: 800px;
 	height: calc(100vh - 200px);
@@ -215,12 +215,14 @@ footer {
 }
 
 .home .wrapper,
-.profile .wrapper {
+.profile .wrapper,
+.account .wrapper {
 	position: relative;
 }
 
 .home .wrapper h1,
-.profile .wrapper h1 {
+.profile .wrapper h1,
+.account .wrapper h1 {
 	text-transform: uppercase;
 }
 
@@ -262,11 +264,11 @@ footer {
 }
 
 
-.profile .container div.right table {
+.profile .container div.right table, .account .container div.right table {
 	width: 100%;
 }
 
-.profile .container div.right table td {
+.profile .container div.right table td, .account .container div.right table td {
 	padding: 18px 5px;
 }
 
@@ -282,7 +284,12 @@ footer {
 
 table input[name="name"],
 table input[name="birthdate"],
-table textarea[name="hubby"] {
+table textarea[name="hubby"],
+table input[name="email"],
+table input[name="password"],
+table input[name="confirmation_password"],
+table input[name="old_password"]
+{
 	padding: 10px;
 	border-radius: 3px;
 	border: 1px solid #eaeaea;
@@ -306,7 +313,7 @@ table button {
 	object-fit: cover;
 }
 
-.profile .left {
+.profile .left, .account .left  {
 	margin: 20px 0px;
 }
 
@@ -320,4 +327,16 @@ table button {
 
 .profile .left>label>input {
 	display: none;
+}
+
+.profile .error-message,.account .error-message {
+	margin-top: 10px;
+}
+
+.account table{
+	max-width: 450px !important;
+}
+
+nav ul li.active{
+	display: none !important;
 }

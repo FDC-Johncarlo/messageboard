@@ -34,10 +34,14 @@
 	// Routes that will handle the pages for Authenticated Users
 	Router::connect('/home', array('controller' => 'pages', 'action' => 'display', 'home'));
 	Router::connect('/my-profile', array('controller' => 'pages', 'action' => 'display', 'profile'));
+	Router::connect('/my-account', array('controller' => 'pages', 'action' => 'display', 'account'));
+	Router::connect('/logout', array('controller' => 'api', 'action' => 'logout'));
 
 	// Routes that will handle the API END POINT
 	Router::connect('/api/register', array('controller' => 'api', 'action' => 'register'));
 	Router::connect('/api/login', array('controller' => 'api', 'action' => 'login'));
+	Router::connect('/api/profile', array('controller' => 'api', 'action' => 'profile'));
+	Router::connect('/api/account', array('controller' => 'api', 'action' => 'account'));
 /**
  * ...and connect the rest of 'Pages' controller's URLs.
  */

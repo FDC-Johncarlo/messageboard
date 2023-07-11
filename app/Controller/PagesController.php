@@ -53,6 +53,8 @@ class PagesController extends AppController {
 			$this->profile();
 		}
 
+		$this->set("path", $path);
+
 		$count = count($path);
 		if (!$count) {
 			return $this->redirect('/');
@@ -81,6 +83,19 @@ class PagesController extends AppController {
 			}
 			throw new NotFoundException();
 		}
+	}
+
+	public function beforeFilter() {
+		parent::beforeFilter();
+		
+		// $authPages = array("");
+		
+		// $sessionData = CakeSession::read();
+		
+
+		// if (!$this->Session->check('User')) {
+		// 	$this->redirect(Configure::read("BASE_URL")."/login");
+		// }
 	}
 
 	public function profile(){
