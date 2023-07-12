@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Static content controller.
  *
@@ -28,29 +29,77 @@ App::uses('CakeSession', 'Model/Datasource');
  * @package       app.Controller
  * @link https://book.cakephp.org/2.0/en/controllers/pages-controller.html
  */
-class PagesController extends AppController {
+class PagesController extends AppController
+{
 
-/**
- * This controller does not use a model
- *
- * @var array
- */
+	/**
+	 * This controller does not use a model
+	 *
+	 * @var array
+	 */
 	public $uses = array();
 
-/**
- * Displays a view
- *
- * @return CakeResponse|null
- * @throws ForbiddenException When a directory traversal attempt.
- * @throws NotFoundException When the view file could not be found
- *   or MissingViewException in debug mode.
- */
-	public function display() {
+	/**
+	 * Displays a view
+	 *
+	 * @return CakeResponse|null
+	 * @throws ForbiddenException When a directory traversal attempt.
+	 * @throws NotFoundException When the view file could not be found
+	 *   or MissingViewException in debug mode.
+	 */
+
+	public function beforeFilter()
+	{
+		parent::beforeFilter();
+		# Get the current Path loaded
+
+		$currentRouteDisplay = $this->params->url;
+
+		# Un-Authenticated Page
+		$unauthPages = array(
+			"login",
+			"register",
+			"success-registration"
+		);
+
+		# Authenticated Page
+		$authPages = array(
+			"home",
+			"my-profile",
+			"my-account",
+			"new-message",
+			"success-registration"
+		);
+
+		$sessionData = CakeSession::read();
+
+		# Check if the session Users index is set
+		if (isset($sessionData["Users"])) {
+			# Check if the current route is exist on array if not the redirect  to home
+			if (!in_array($currentRouteDisplay, $authPages)) {
+				$this->redirect(Configure::read("BASE_URL") . "/home");
+			}
+		} else {
+			# Check if the current route is exist on array if not the redirect  to login
+			if (!in_array($currentRouteDisplay, $unauthPages)) {
+				$this->redirect(Configure::read("BASE_URL") . "/login");
+			}
+		}
+	}
+
+	public function display()
+	{
 
 		$path = func_get_args();
 
-		if($path[0] == "profile"){
+		# Load the profile informaton
+		if ($path[0] == "profile") {
 			$this->profile();
+		}
+
+		# load the messages
+		if ($path[0] == "home") {
+			$this->allList();
 		}
 
 		$this->set("path", $path);
@@ -85,24 +134,12 @@ class PagesController extends AppController {
 		}
 	}
 
-	public function beforeFilter() {
-		parent::beforeFilter();
-		
-		// $authPages = array("");
-		
-		// $sessionData = CakeSession::read();
-		
-
-		// if (!$this->Session->check('User')) {
-		// 	$this->redirect(Configure::read("BASE_URL")."/login");
-		// }
-	}
-
-	public function profile(){
+	public function profile()
+	{
 		# Get the all current session
 		$sessionData = CakeSession::read();
 		# Check if the session users index are isset
-		if(isset($sessionData["Users"])){
+		if (isset($sessionData["Users"])) {
 			# Get the id from Session
 			$user_id = $sessionData["Users"]["data"]["id"];
 
@@ -117,7 +154,7 @@ class PagesController extends AppController {
 				"UsersData.hubby",
 				"UsersData.profile",
 			];
-			
+
 			# Perform the JOIN operation between 2 table Users:LoginModel & users_data as UsersData
 			$records = $this->LoginModel->find("all", array(
 				"fields" => $columns,
@@ -134,11 +171,11 @@ class PagesController extends AppController {
 			));
 
 			# Check if the records joined is not empty
-			if(empty($records)){
+			if (empty($records)) {
 				# If the records is not yet in the database
 				$result["status"] = false;
 				$result["userInfo"] = $sessionData["Users"]["data"];
-			}else{
+			} else {
 				# Joined 2 table columns
 				$result["userInfo"] = array_merge($records[0]["LoginModel"], $records[0]["UsersData"]);
 				$result["status"] = true;
@@ -146,6 +183,48 @@ class PagesController extends AppController {
 
 			# Set a profile variable so that we can access this variable to pages
 			$this->set("profile", $result);
+		}
+	}
+
+	public function allList()
+	{
+		# Get the all current session
+		$sessionData = CakeSession::read();
+		if (isset($sessionData["Users"])) {
+			# Get the id from Session
+			$user_id = $sessionData["Users"]["data"]["id"];
+
+			# Initialize the Login Model
+			$this->loadModel("MessageModel");
+
+			$options = array(
+				"fields" => array("MessageModel.*"),
+				"order" => array("MessageModel.last_update DESC"),
+				"conditions" => array(
+					"OR" => array(
+						"MessageModel.pair_one" => $user_id,
+						"MessageModel.pair_two" => $user_id
+					)
+				)
+			);
+
+			$records = $this->MessageModel->find("all", $options);
+
+			if(!empty($records)){
+				$this->loadModel("UsersDataModel");
+				foreach($records as $key => $value){
+					if($user_id == $value["MessageModel"]["pair_one"]){
+						$userDataPairOne = $this->UsersDataModel->findByFkId($value["MessageModel"]["pair_two"]);
+					}else{
+						$userDataPairOne = $this->UsersDataModel->findByFkId($value["MessageModel"]["pair_one"]);
+					}
+
+					$records[$key]["MessageModel"]["receiver"] = $userDataPairOne;
+				}
+			}
+
+			$this->set("list", $records);
+			$this->set("currentUser", $user_id);
 		}
 	}
 } # End of the class

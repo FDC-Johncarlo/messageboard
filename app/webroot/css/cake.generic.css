@@ -206,7 +206,9 @@ footer {
 
 /* Home Css */
 #content.home,
-#content.profile, #content.account{
+#content.profile,
+#content.account,
+#content.new-message {
 	width: 100%;
 	max-width: 800px;
 	height: calc(100vh - 200px);
@@ -216,13 +218,15 @@ footer {
 
 .home .wrapper,
 .profile .wrapper,
-.account .wrapper {
+.account .wrapper,
+.new-message .wrapper {
 	position: relative;
 }
 
 .home .wrapper h1,
 .profile .wrapper h1,
-.account .wrapper h1 {
+.account .wrapper h1,
+.new-message .wrapper h1 {
 	text-transform: uppercase;
 }
 
@@ -264,11 +268,15 @@ footer {
 }
 
 
-.profile .container div.right table, .account .container div.right table {
+.profile .container div.right table,
+.account .container div.right table,
+.new-message .message-list-content div.right table {
 	width: 100%;
 }
 
-.profile .container div.right table td, .account .container div.right table td {
+.profile .container div.right table td,
+.account .container div.right table td,
+.new-message .message-list-content div.right table td {
 	padding: 18px 5px;
 }
 
@@ -288,8 +296,9 @@ table textarea[name="hubby"],
 table input[name="email"],
 table input[name="password"],
 table input[name="confirmation_password"],
-table input[name="old_password"]
-{
+table input[name="old_password"],
+table select[name="to"],
+table textarea[name="message"] {
 	padding: 10px;
 	border-radius: 3px;
 	border: 1px solid #eaeaea;
@@ -313,7 +322,8 @@ table button {
 	object-fit: cover;
 }
 
-.profile .left, .account .left  {
+.profile .left,
+.account .left {
 	margin: 20px 0px;
 }
 
@@ -329,14 +339,42 @@ table button {
 	display: none;
 }
 
-.profile .error-message,.account .error-message {
+.profile .error-message,
+.account .error-message,
+.new-message .error-message {
 	margin-top: 10px;
 }
 
-.account table{
+.account table {
 	max-width: 450px !important;
 }
 
-nav ul li.active{
+nav ul li.active {
 	display: none !important;
+}
+
+.message-action {
+	text-align: right;
+	margin: 20px 0px;
+}
+
+.message-action a {
+	background-color: var(---primary);
+	color: var(---default);
+	padding: 10px 20px;
+	display: inline-block;
+	text-decoration: none;
+	border-radius: 3px;
+}
+
+.custom-row-result{
+	display: flex;
+	column-gap: 10px;
+	align-items: center;
+}
+
+.select2-option-image {
+	width: 25px;
+	height: 25px;
+	object-fit: cover;
 }

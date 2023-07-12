@@ -8,6 +8,6 @@
    <div class="verbiage">
         <h1>Thank you for registering</h1>
         <p>You can now proceed to the home page and start chatting with others.</p>
-        <a href="javascript:void(0)">Back to Home Page</a>
+        <a href="<?= Configure::read("BASE_URL") ?>/home">Back to Home Page</a>
    </div>
 </div>

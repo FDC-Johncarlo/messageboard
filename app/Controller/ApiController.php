@@ -4,6 +4,8 @@
 App::uses("Security", "Utility");
 App::uses('CakeSession', 'Model/Datasource');
 
+// App::uses('ConnectionManager', 'Model');
+
 class ApiController extends AppController
 {
     public $autoRender = false; # Disable the default view rendering
@@ -33,6 +35,8 @@ class ApiController extends AppController
 
                 $this->RegisterModel->create(); # Prepare the model for a new record
                 $result = $this->RegisterModel->save($dataToBeInserted);
+
+                $this->Session->write('Users.data', $result["RegisterModel"]);
 
                 $response["status"] = true;
                 $response["result"] = $result;
@@ -258,13 +262,16 @@ class ApiController extends AppController
             );
         }
 
-        # if the Remove previous profile from the server is not okay
-        if (!unlink(WWW_ROOT . "uploads\profile" . DS . $userData["UsersDataModel"]["profile"])) {
-            return array(
-                "status" => false,
-                "field" => false,
-                "message" => "Unable to remove previous profile"
-            );
+        # Before removing check if the user profile is is not equal to null
+        if ($userData["UsersDataModel"]["profile"] !== null) {
+            # if the Remove previous profile from the server is not okay
+            if (!unlink(WWW_ROOT . "uploads\profile" . DS . $userData["UsersDataModel"]["profile"])) {
+                return array(
+                    "status" => false,
+                    "field" => false,
+                    "message" => "Unable to remove previous profile"
+                );
+            }
         }
 
         # If everthing was Ok
@@ -304,7 +311,7 @@ class ApiController extends AppController
                         "Email" => [""],
                         "Password" => [""]
                     ],
-                    "false" => false
+                    "status" => false
                 ];
                 return json_encode($response);
             }
@@ -371,7 +378,7 @@ class ApiController extends AppController
                                 "fieldList" => [
                                     "old_password" => ["Invalid Confirmation Password"],
                                 ],
-                                "false" => false
+                                "status" => false
                             ];
                         }
 
@@ -397,7 +404,7 @@ class ApiController extends AppController
                                 "fieldList" => [
                                     "old_password" => ["Invalid Confirmation Password"],
                                 ],
-                                "false" => false
+                                "status" => false
                             ];
                         }
                 }
@@ -414,8 +421,172 @@ class ApiController extends AppController
         # If there is no Request
         $this->errorMessage("INVALID REQUEST");
     }
-    public function logout(){
+    public function logout()
+    {
         CakeSession::delete('Users');
         $this->redirect(Configure::read("BASE_URL"));
+    }
+    public function list()
+    {
+        # Get the session data
+        $sessionData = CakeSession::read();
+        $user_id = $sessionData["Users"]["data"]["id"];
+
+        # check the request if post
+        if ($this->request->is("get")) {
+            # Initialize Connection
+            $this->loadModel("RegisterModel");
+
+            # Get the post data from form
+            $data = $this->request->query;
+
+            # Check the term searchTerm if not empty
+            if (!empty($data["searchTerm"])) {
+                # Query options
+                $options = array(
+                    "conditions" => array(
+                        "id !=" => $user_id,
+                        "name LIKE" => "%$data[searchTerm]%"
+                    )
+                );
+
+                $results = $this->RegisterModel->find("all", $options);
+            } else { # Else display all the records
+
+                # Query options
+                $options = array(
+                    "conditions" => array(
+                        "id !=" => $user_id
+                    )
+                );
+
+                $results = $this->RegisterModel->find("all", $options);
+            }
+
+            # Initialize Connection for usedata
+            $this->loadModel("UsersDataModel");
+
+
+            # check if the result if empty array
+            if (!empty($results)) {
+                # serialize the reponse accordingly to select2 json response format
+                foreach ($results as $key => $value) {
+                    # get the userdata information
+                    $userData = $this->UsersDataModel->findByFkId($value["RegisterModel"]["id"]);
+
+                    # check if has userdata information
+                    if (empty($userData)) {
+                        $serializeResult["result"][$key]["image"] = null;
+                    } else { #if has then add image
+                        $serializeResult["result"][$key]["image"] = $userData["UsersDataModel"]["profile"];
+                    }
+
+                    $serializeResult["result"][$key]["id"] = $value["RegisterModel"]["id"];
+                    $serializeResult["result"][$key]["text"] = $value["RegisterModel"]["name"];
+                }
+            } else {
+                $serializeResult = ["result" => []];
+            }
+
+            return json_encode($serializeResult);
+        }
+    }
+    public function send()
+    {
+        # Get the session data
+        $sessionData = CakeSession::read();
+        $user_id = $sessionData["Users"]["data"]["id"];
+
+        # based on Asian Time
+        $date = new DateTime("now", new DateTimeZone("Asia/Manila"));
+        $formattedDateTime = $date->format("Y-m-d H:i:s");
+
+        # check the request if post
+        if ($this->request->is("post")) {
+            # Get the post data from form
+            $data = $this->request->data;
+
+            # check if the recipient is empty
+            if (empty($data["to"])) {
+                $response = [
+                    "fieldList" => [
+                        "" => ["Please Select Recipient"],
+                    ],
+                    "status" => false
+                ];
+
+                return json_encode($response);
+            }
+
+            # Initialize Connection
+            $this->loadModel("MessageModel");
+
+            # Chat reference code
+            $chatRef = "CHAT-" . $this->generateChatRef();
+
+            # Query Options
+            $options = array(
+                "conditions" => array(
+                    "OR" => array(
+                        array("pair_one" => $user_id, "pair_two" => $data["to"]),
+                        array("pair_one" => $data["to"], "pair_two" => $user_id)
+                    )
+                )
+            );
+
+            # Get the message information
+            $userData = $this->MessageModel->find("all", $options);
+
+            $this->MessageModel->create(); # Prepare the model for a new record
+
+            # Message content
+            $messageContent = array(
+                array(
+                    "ref" => $chatRef,
+                    "from" => $user_id,
+                    "message" => $data["message"],
+                    "date_push" => $formattedDateTime
+                )
+            );
+
+            if (empty($userData)) {
+                # column
+                $dataToBeInserted = [
+                    "pair_one" => $user_id,
+                    "pair_two" => $data["to"],
+                    "message" => json_encode($messageContent),
+                    "last_update" => $formattedDateTime
+                ];
+                
+                # Perform the insertion
+                $this->MessageModel->save($dataToBeInserted);
+            } else {
+                # Message content
+                $prevChat = json_decode($userData[0]["MessageModel"]["message"]);
+                array_push($prevChat, $messageContent[0]);
+
+                # Start updating the index
+                $userData[0]["MessageModel"]["message"] = json_encode($prevChat);
+                $userData[0]["MessageModel"]["last_update"] = $formattedDateTime;
+
+                # Perform the update
+                $this->MessageModel->save($userData[0]);
+            }
+
+            $response["status"] = true;
+
+            return json_encode($response);
+        }
+    }
+    protected function generateChatRef($strength = 20)
+    {
+        $permitted_chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $input_length = strlen($permitted_chars);
+        $random_string = '';
+        for ($i = 0; $i < $strength; $i++) {
+            $random_character = $permitted_chars[mt_rand(0, $input_length - 1)];
+            $random_string .= $random_character;
+        }
+        return strtolower($random_string);
     }
 } # end of the class

@@ -17,7 +17,7 @@ $(document).ready(function () {
         // check the status of the reponse : Boolean
         if (response.status) {
             // redirect to success page
-            window.location = base_url + "success-registration";
+            location.replace(base_url + "success-registration");
         } else {    
             let result = "<ul>";
 

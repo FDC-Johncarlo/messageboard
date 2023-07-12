@@ -18,7 +18,7 @@ $(document).ready(function () {
         // check the status of the reponse : Boolean
         if (response.status) {
             // redirect to home page if success login
-            window.location = "home";
+            location.replace(base_url + "home");
         } else {
             // add the error response from the end point and show the content
             errorDisplay.html(response.error).show();

@@ -30,7 +30,7 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 
 		echo $this->Html->css('cake.generic');
 		echo $this->Html->css('jquery-ui.css');
-
+		echo $this->Html->css('select2.min.css');
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
 		echo $this->fetch('script');
@@ -55,6 +55,7 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 	<?php
 		echo $this->Html->script('plugins/jquery/dist/jquery.min.js');
 		echo $this->Html->script('plugins/jquery-ui/jquery-ui.js');
+		echo $this->Html->script('plugins/select2/select2.min.js');
 		echo $this->Html->script('modules/global.js');
 		echo $this->Html->script("modules/$module.js");
 	?>
