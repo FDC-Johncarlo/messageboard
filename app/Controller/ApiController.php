@@ -557,7 +557,7 @@ class ApiController extends AppController
                     "message" => json_encode($messageContent),
                     "last_update" => $formattedDateTime
                 ];
-                
+
                 # Perform the insertion
                 $this->MessageModel->save($dataToBeInserted);
             } else {
@@ -588,5 +588,181 @@ class ApiController extends AppController
             $random_string .= $random_character;
         }
         return strtolower($random_string);
+    }
+
+    public function reuseableListMessage($offset, $limit)
+    {
+        # Get the all current session
+        $sessionData = CakeSession::read();
+
+        # Check also if session is isset
+        if (isset($sessionData["Users"])) {
+            # Get the id from Session
+            $user_id = $sessionData["Users"]["data"]["id"];
+
+            # Initialize the Login Model
+            $this->loadModel("MessageModel");
+
+            $options = array(
+                "fields" => array("MessageModel.*", "count(*) OVER() AS full_count"),
+                "order" => array("MessageModel.last_update DESC"),
+                "conditions" => array(
+                    "OR" => array(
+                        "MessageModel.pair_one" => $user_id,
+                        "MessageModel.pair_two" => $user_id
+                    )
+                ),
+                "offset" => $offset,
+                "limit" => $limit,
+            );
+
+            # Execute the query
+            $records = $this->MessageModel->find("all", $options);
+
+            # check if the Excuted query is not empty array
+            if (!empty($records)) {
+                $this->loadModel("UsersDataModel");
+
+                $this->loadModel("LoginModel");
+                # Intialize Model UserData
+                foreach ($records as $key => $value) {
+                    # Check if the current user is in pair one
+                    if ($user_id == $value["MessageModel"]["pair_one"]) {
+                        $toBeFind = $value["MessageModel"]["pair_two"];
+                    } else { # if not then the FK will be on the pair one
+                        $toBeFind = $value["MessageModel"]["pair_one"];
+                    }
+
+                    # Execute 
+                    $userDataPairOne = $this->UsersDataModel->findByFkId($toBeFind);
+
+                    # Query options
+                    $options = array(
+                        "fields" => array("LoginModel.name"),
+                        "conditions" => array(
+                            "LoginModel.id" => $toBeFind
+                        )
+                    );
+
+                    # Execute the query
+                    $userIformationData = $this->LoginModel->find("all", $options);
+
+                    $records[$key]["MessageModel"]["name"] = $userIformationData[0]["LoginModel"]["name"];
+                    $records[$key]["MessageModel"]["receiver"] = $userDataPairOne;
+                }
+            }
+
+            $reponse["from"] = $user_id;
+            $reponse["result"] = $records;
+
+            return $reponse;
+        }
+    }
+
+    public function more($offset = 0, $limit = 5)
+    {
+        # check the request if post
+        if ($this->request->is("post")) {
+            $result = $this->reuseableListMessage($offset, $limit);
+            return json_encode($result);
+        }
+
+        # If there is no Request
+        $this->errorMessage("INVALID REQUEST");
+    }
+
+    public function delete()
+    {
+        # check the request if post
+        if ($this->request->is("post")) {
+            # get the request data
+            $data = $this->request->data;
+
+            # Intialize Model MessageModel
+            $this->loadModel("MessageModel");
+
+            $newList = $this->reuseableListMessage($data["offset"], $data["limit"]);
+
+            $result = $this->MessageModel->deleteAll(
+                array(
+                    array("id" =>  $data["ref"])
+                )
+            );
+
+            $reponse["status"] = $result;
+            $reponse["newAdded"] = $newList;
+
+            return json_encode($reponse);
+        }
+
+        # If there is no Request
+        $this->errorMessage("INVALID REQUEST");
+    }
+
+    public function reply()
+    {
+        
+        # Get the all current session
+        $sessionData = CakeSession::read();
+        $user_id = $sessionData["Users"]["data"]["id"];
+
+        # based on Asian Time
+        $date = new DateTime("now", new DateTimeZone("Asia/Manila"));
+        $formattedDateTime = $date->format("Y-m-d H:i:s");
+
+        # check the request if post
+        if ($this->request->is("post")) {
+            # get the request data
+            $data = $this->request->data;
+
+            # Intialize Model MessageModel
+            $this->loadModel("MessageModel");
+
+            # Chat reference code
+            $chatRef = "CHAT-" . $this->generateChatRef();
+
+            # Query Options
+            $options = array(
+                "conditions" => array(
+                    "OR" => array(
+                        array("pair_one" => $user_id, "pair_two" => $data["to"]),
+                        array("pair_one" => $data["to"], "pair_two" => $user_id)
+                    )
+                )
+            );
+
+            # Get the message information
+            $userData = $this->MessageModel->find("all", $options);
+
+            $this->MessageModel->create(); # Prepare the model for a new record
+
+            # Message content
+            $messageContent = array(
+                array(
+                    "ref" => $chatRef,
+                    "from" => $user_id,
+                    "message" => $data["reply"],
+                    "date_push" => $formattedDateTime
+                )
+            );
+
+       
+            $prevChat = json_decode($userData[0]["MessageModel"]["message"]);
+            array_push($prevChat, $messageContent[0]);
+
+            # Start updating the index
+            $userData[0]["MessageModel"]["message"] = json_encode($prevChat);
+            $userData[0]["MessageModel"]["last_update"] = $formattedDateTime;
+
+            # Perform the update
+            $this->MessageModel->save($userData[0]);
+
+            $response["status"] = true;
+
+            return json_encode($response);
+        }
+
+        # If there is no Request
+        $this->errorMessage("INVALID REQUEST");
     }
 } # end of the class

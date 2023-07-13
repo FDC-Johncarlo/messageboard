@@ -208,7 +208,8 @@ footer {
 #content.home,
 #content.profile,
 #content.account,
-#content.new-message {
+#content.new-message,
+#content.chat {
 	width: 100%;
 	max-width: 800px;
 	height: calc(100vh - 200px);
@@ -219,14 +220,16 @@ footer {
 .home .wrapper,
 .profile .wrapper,
 .account .wrapper,
-.new-message .wrapper {
+.new-message .wrapper,
+.chat .wrapper {
 	position: relative;
 }
 
 .home .wrapper h1,
 .profile .wrapper h1,
 .account .wrapper h1,
-.new-message .wrapper h1 {
+.new-message .wrapper h1,
+.chat .wrapper h1 {
 	text-transform: uppercase;
 }
 
@@ -367,7 +370,7 @@ nav ul li.active {
 	border-radius: 3px;
 }
 
-.custom-row-result{
+.custom-row-result {
 	display: flex;
 	column-gap: 10px;
 	align-items: center;
@@ -377,4 +380,118 @@ nav ul li.active {
 	width: 25px;
 	height: 25px;
 	object-fit: cover;
+}
+
+/* .home .card-list */
+
+.card-list .action-area a {
+	text-align: none;
+}
+
+.card-list .action-area {
+	visibility: hidden;
+	position: absolute;
+	right: 10px;
+	top: 4px;
+}
+
+.card-list.me-chat:hover .action-area {
+	visibility: hidden !important;
+	position: absolute !important;
+	right: 101px !important;
+	top: 68px !important;
+}
+
+.card-list.me-chat:hover .action-area,
+.card-list.me-chat:hover+.chat .card-list.me-chat .action-area {
+	visibility: visible !important;
+}
+
+.card-list:hover .action-area,
+.card-list:hover+.home .card-list .action-area {
+	visibility: visible;
+}
+
+.card-list {
+	display: flex;
+	width: 100%;
+	margin-top: 10px;
+	border: 1px solid #d5d5d5;
+	position: relative;
+}
+
+.card-list img {
+	width: 100%;
+	max-width: 90px;
+	height: 90px;
+}
+
+.card-list p {
+	word-wrap: break-word;
+	white-space: normal;
+	overflow: hidden;
+	display: -webkit-box;
+	text-overflow: ellipsis;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	padding-left: 20px;
+	padding-right: 20px;
+	height: 33px;
+}
+
+.card-list h4.nameOfRecipient {
+	margin: 6px 20px;
+	text-transform: uppercase;
+	font-size: 12px;
+	color: #ff8989;
+}
+
+.card-list span {
+	display: block;
+	text-align: right;
+	padding: 0px 10px;
+	margin-top: 5px;
+	font-size: 12px;
+	border-top: 1px solid #d5d5d5;
+	padding-top: 4px;
+}
+
+.chat .card-list.me-chat span {
+	text-align: left !important;
+}
+
+#show-more {
+	padding: 5px 14px;
+}
+
+.card-list .right-content-msg {
+	width: 100%;
+}
+
+.card-list {
+	cursor: pointer;
+}
+
+.chat-fields textarea {
+	display: block;
+	padding: 10px;
+	border-radius: 3px;
+	border: 1px solid #eaeaea;
+	width: calc(100% - 20px);
+	font-family: inherit !important;
+	margin-top: 10px;
+}
+
+.action-reply {
+	text-align: right;
+}
+
+.action-reply button {
+	margin: 10px 0px;
+	font-family: inherit;
+	padding: 10px 40px;
+	border: none;
+	color: var(---default);
+	background-color: var(---primary);
+	border-radius: 3px;
 }

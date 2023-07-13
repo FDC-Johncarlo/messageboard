@@ -36,6 +36,7 @@
 	Router::connect('/my-profile', array('controller' => 'pages', 'action' => 'display', 'profile'));
 	Router::connect('/my-account', array('controller' => 'pages', 'action' => 'display', 'account'));
 	Router::connect('/new-message', array('controller' => 'pages', 'action' => 'display', 'new-message'));
+	Router::connect('/details/:pair_one/:pair_two', array('controller' => 'pages', 'action' => 'displaydetails', 'chat'));
 	Router::connect('/logout', array('controller' => 'api', 'action' => 'logout'));
 
 	# Routes that will handle the API END POINT
@@ -45,6 +46,9 @@
 	Router::connect('/api/account', array('controller' => 'api', 'action' => 'account'));
 	Router::connect('/api/list', array('controller' => 'api', 'action' => 'list'));
 	Router::connect('/api/send', array('controller' => 'api', 'action' => 'send'));
+	Router::connect('/api/more', array('controller' => 'api', 'action' => 'more'));
+	Router::connect('/api/delete-message', array('controller' => 'api', 'action' => 'delete'));
+	Router::connect('/api/reply', array('controller' => 'api', 'action' => 'reply'));
 /**
  * ...and connect the rest of 'Pages' controller's URLs.
  */
