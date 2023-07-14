@@ -1,3 +1,6 @@
+<span>Welcome To</span>
+<h1>Message Board</h1>
+<p><?= $userInfoPub["name"] ?></p>
 <div class="mini-nav">
     <nav>
         <ul>

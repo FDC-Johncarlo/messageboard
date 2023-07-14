@@ -13,6 +13,10 @@ class ApiController extends AppController
 
     public function register()
     {
+        
+        $date = new DateTime("now", new DateTimeZone("Asia/Manila"));
+        $formattedDateTime = $date->format("Y-m-d");
+
         # check the request if post
         if ($this->request->is("post")) {
             # load the usersmodel
@@ -31,6 +35,7 @@ class ApiController extends AppController
                     "name" => $data["name"],
                     "email" => $data["email"],
                     "password" => Security::hash($data["password"], "sha1", true),
+                    "date_register" => $formattedDateTime
                 ];
 
                 $this->RegisterModel->create(); # Prepare the model for a new record
@@ -701,7 +706,6 @@ class ApiController extends AppController
 
     public function reply()
     {
-        
         # Get the all current session
         $sessionData = CakeSession::read();
         $user_id = $sessionData["Users"]["data"]["id"];
@@ -746,7 +750,7 @@ class ApiController extends AppController
                 )
             );
 
-       
+
             $prevChat = json_decode($userData[0]["MessageModel"]["message"]);
             array_push($prevChat, $messageContent[0]);
 
@@ -759,6 +763,111 @@ class ApiController extends AppController
 
             $response["status"] = true;
 
+            return json_encode($response);
+        }
+
+        # If there is no Request
+        $this->errorMessage("INVALID REQUEST");
+    }
+    public function moremessage()
+    {
+        # Get the all current session
+        $sessionData = CakeSession::read();
+        $user_id = $sessionData["Users"]["data"]["id"];
+
+        # check the request if post
+        if ($this->request->is("post")) {
+            # get the request data
+            $data = $this->request->data;
+
+            # Intialize Model MessageModel
+            $this->loadModel("MessageModel");
+
+            # Query Options
+            $options = array(
+                "conditions" => array(
+                    "OR" => array(
+                        array("pair_one" => $user_id, "pair_two" => $data["to"]),
+                        array("pair_one" => $data["to"], "pair_two" => $user_id)
+                    )
+                )
+            );
+
+            # Get the message information
+            $userData = $this->MessageModel->find("all", $options)[0]["MessageModel"];
+
+            $this->loadModel("UsersDataModel");
+            $this->loadModel("LoginModel");
+
+            # Execute 
+            $userDataReceiver = $this->UsersDataModel->findByFkId($data["to"]);
+            $userAccounReceiver = $this->LoginModel->findById($data["to"]);
+
+            $currentUserData = $this->UsersDataModel->findByFkId($user_id);
+
+            $userData["userAccount"] = $userAccounReceiver["LoginModel"];
+            $userData["userData"] = empty($userDataReceiver) ? [] : $userDataReceiver["UsersDataModel"];
+            $userData["currentUserData"] = empty($currentUserData) ? [] : $currentUserData["UsersDataModel"];
+
+            $response["status"] = true;
+            $response["result"] = $userData;
+            $response["from"] = $user_id;
+
+            return json_encode($response);
+        }
+
+        # If there is no Request
+        $this->errorMessage("INVALID REQUEST");
+    }
+
+    public function deletereply()
+    {
+        # Get the all current session
+        $sessionData = CakeSession::read();
+        $user_id = $sessionData["Users"]["data"]["id"];
+
+        # check the request if post
+        if ($this->request->is("post")) {
+            # get the request data
+            $data = $this->request->data;
+
+            # Intialize Model MessageModel
+            $this->loadModel("MessageModel");
+
+            # Query Options
+            $options = array(
+                "conditions" => array(
+                    "OR" => array(
+                        array("pair_one" => $user_id, "pair_two" => $data["to"]),
+                        array("pair_one" => $data["to"], "pair_two" => $user_id)
+                    )
+                )
+            );
+
+            # Get the message information
+            $userData = $this->MessageModel->find("all", $options)[0]["MessageModel"];
+            
+            $messageContent = json_decode($userData["message"]);
+
+            foreach($messageContent as $key => $value){
+                if ($value->ref === $data["ref"]) {
+                    unset($messageContent[$key]);
+                    break; 
+                }
+            }
+
+            # Reset array keys if desired
+            $restKetsMessage = array_values($messageContent);
+            $updateMEssageContent = json_encode($restKetsMessage);
+
+            $userData["message"] = $updateMEssageContent;
+            $response["status"] = true;
+
+            $this->MessageModel->create(); # Prepare the model for a new record
+            
+            # Perform the update
+            $this->MessageModel->save($userData);
+            
             return json_encode($response);
         }
 

@@ -34,6 +34,7 @@
 	# Routes that will handle the pages for Authenticated Users
 	Router::connect('/home', array('controller' => 'pages', 'action' => 'display', 'home'));
 	Router::connect('/my-profile', array('controller' => 'pages', 'action' => 'display', 'profile'));
+	Router::connect('/edit-profile', array('controller' => 'pages', 'action' => 'display', 'edit-profile'));
 	Router::connect('/my-account', array('controller' => 'pages', 'action' => 'display', 'account'));
 	Router::connect('/new-message', array('controller' => 'pages', 'action' => 'display', 'new-message'));
 	Router::connect('/details/:pair_one/:pair_two', array('controller' => 'pages', 'action' => 'displaydetails', 'chat'));
@@ -49,6 +50,8 @@
 	Router::connect('/api/more', array('controller' => 'api', 'action' => 'more'));
 	Router::connect('/api/delete-message', array('controller' => 'api', 'action' => 'delete'));
 	Router::connect('/api/reply', array('controller' => 'api', 'action' => 'reply'));
+	Router::connect('/api/more-message', array('controller' => 'api', 'action' => 'moremessage'));
+	Router::connect('/api/delete-reply', array('controller' => 'api', 'action' => 'deletereply'));
 /**
  * ...and connect the rest of 'Pages' controller's URLs.
  */

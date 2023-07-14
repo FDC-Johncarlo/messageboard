@@ -50,46 +50,46 @@ class PagesController extends AppController
 
 	public function beforeFilter()
 	{
-		// parent::beforeFilter();
-		// # Get the current Path loaded
+		parent::beforeFilter();
+		# Get the current Path loaded
 
-		// $currentRouteDisplay = $this->params->url;
+		$currentRouteDisplay = $this->params["pass"][0];
 
-		// echo '<pre>';
-		// print_r($this->params);
-		// exit;
+		# Un-Authenticated Page
+		$unauthPages = array(
+			"login",
+			"register",
+			"success"
+		);
 
-		// # Un-Authenticated Page
-		// $unauthPages = array(
-		// 	"login",
-		// 	"register",
-		// 	"success-registration"
-		// );
+		# Authenticated Page
+		$authPages = array(
+			"home",
+			"profile",
+			"edit-profile",
+			"account",
+			"new-message",
+			"chat",
+			"success"
+		);
 
-		// # Authenticated Page
-		// $authPages = array(
-		// 	"home",
-		// 	"my-profile",
-		// 	"my-account",
-		// 	"new-message",
-		// 	"details",
-		// 	"success-registration"
-		// );
+		$sessionData = CakeSession::read();
 
-		// $sessionData = CakeSession::read();
+		# Check if the session Users index is set
+		if (isset($sessionData["Users"])) {
+			# Check if the current route is exist on array if not the redirect  to home
+			if (!in_array($currentRouteDisplay, $authPages)) {
+				$this->redirect(Configure::read("BASE_URL") . "/home");
+			}
+		} else {
+			# Check if the current route is exist on array if not the redirect  to login
+			if (!in_array($currentRouteDisplay, $unauthPages)) {
+				$this->redirect(Configure::read("BASE_URL") . "/login");
+			}
+		}
 
-		// # Check if the session Users index is set
-		// if (isset($sessionData["Users"])) {
-		// 	# Check if the current route is exist on array if not the redirect  to home
-		// 	if (!in_array($currentRouteDisplay, $authPages)) {
-		// 		$this->redirect(Configure::read("BASE_URL") . "/home");
-		// 	}
-		// } else {
-		// 	# Check if the current route is exist on array if not the redirect  to login
-		// 	if (!in_array($currentRouteDisplay, $unauthPages)) {
-		// 		$this->redirect(Configure::read("BASE_URL") . "/login");
-		// 	}
-		// }
+		# Looad information
+		$this->myInfo();
 	}
 
 	public function display()
@@ -98,7 +98,7 @@ class PagesController extends AppController
 		$path = func_get_args();
 
 		# Load the profile informaton
-		if ($path[0] == "profile") {
+		if ($path[0] == "edit-profile" || $path[0] == "profile") {
 			$this->profile();
 		}
 
@@ -143,11 +143,15 @@ class PagesController extends AppController
 	{
 		# Get the all current session
 		$sessionData = CakeSession::read();
-		$user_id = $sessionData["Users"]["data"]["id"];
+		if(isset($sessionData["Users"])){
+			$user_id = $sessionData["Users"]["data"]["id"];
 
-		$this->loadModel("LoginModel");
+			$this->loadModel("LoginModel");
 
-		// $userDataPairOne = $this->UsersDataModel->findById($user_id);
+			$userDataPairOne = $this->LoginModel->findById($user_id);
+
+			$this->set("userInfoPub", $userDataPairOne["LoginModel"]);
+		};
 	}
 
 	public function profile()
@@ -169,6 +173,7 @@ class PagesController extends AppController
 				"UsersData.gender",
 				"UsersData.hubby",
 				"UsersData.profile",
+				"LoginModel.date_register",
 			];
 
 			# Perform the JOIN operation between 2 table Users:LoginModel & users_data as UsersData
@@ -186,12 +191,35 @@ class PagesController extends AppController
 				"conditions" => array("LoginModel.id" => $user_id)
 			));
 
+
 			# Check if the records joined is not empty
 			if (empty($records)) {
 				# If the records is not yet in the database
+				$sessionData["Users"]["data"]["age"] = "";
+				$sessionData["Users"]["data"]["gender"] = "N/A";
+				$sessionData["Users"]["data"]["hubby"] = "N/A";
+				$sessionData["Users"]["data"]["birth_date"] = "N/A";
+				$sessionData["Users"]["data"]["last_log"] = "New User";
+				$sessionData["Users"]["data"]["date_register"] = date("F d, Y", strtotime($sessionData["Users"]["data"]["date_register"]));
 				$result["status"] = false;
 				$result["userInfo"] = $sessionData["Users"]["data"];
 			} else {
+				# Initialize the Login Model
+				$this->loadModel("UsersLogModel");
+
+				$userLogData = $this->UsersLogModel->findByFkId($user_id);
+
+				if (empty($userLogData)) {
+					$userLogData = "New User";
+				} else {
+					$userLogData = date("F d, Y h:s A", strtotime($userLogData["UsersLogModel"]["last_login_time"]));;
+				}
+
+				$records[0]["LoginModel"]["age"] = $this->calculateAge($records[0]["UsersData"]["birth_date"]);
+				$records[0]["UsersData"]["birth_date"] = date("F d, Y", strtotime($records[0]["UsersData"]["birth_date"]));
+				$records[0]["LoginModel"]["date_register"]  = date("F d, Y", strtotime($records[0]["LoginModel"]["date_register"]));
+				$records[0]["LoginModel"]["last_log"]  = $userLogData;
+
 				# Joined 2 table columns
 				$result["userInfo"] = array_merge($records[0]["LoginModel"], $records[0]["UsersData"]);
 				$result["status"] = true;
@@ -329,9 +357,9 @@ class PagesController extends AppController
 			# Get the id from Session
 			$user_id = $sessionData["Users"]["data"]["id"];
 
-			if($pair_one == $user_id){
+			if ($pair_one == $user_id) {
 				$receiver_id = $pair_two;
-			}else{
+			} else {
 				$receiver_id = $pair_one;
 			}
 
@@ -373,7 +401,13 @@ class PagesController extends AppController
 			$this->errorMessage("INVALID REQUEST");
 		}
 
-        # If there is no Request
-        $this->errorMessage("INVALID REQUEST");
+		# If there is no Request
+		$this->errorMessage("INVALID REQUEST");
+	}
+	public function calculateAge($birthdate)
+	{
+		$today = date("Y/m/d");
+		$diff = date_diff(date_create($birthdate), date_create($today));
+		return $diff->format("%y");
 	}
 } # End of the class

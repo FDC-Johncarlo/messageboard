@@ -207,6 +207,7 @@ footer {
 /* Home Css */
 #content.home,
 #content.profile,
+#content.edit-profile,
 #content.account,
 #content.new-message,
 #content.chat {
@@ -219,6 +220,7 @@ footer {
 
 .home .wrapper,
 .profile .wrapper,
+.edit-profile .wrapper,
 .account .wrapper,
 .new-message .wrapper,
 .chat .wrapper {
@@ -227,6 +229,7 @@ footer {
 
 .home .wrapper h1,
 .profile .wrapper h1,
+.edit-profile .wrapper h1,
 .account .wrapper h1,
 .new-message .wrapper h1,
 .chat .wrapper h1 {
@@ -272,12 +275,14 @@ footer {
 
 
 .profile .container div.right table,
+.edit-profile .container div.right table,
 .account .container div.right table,
 .new-message .message-list-content div.right table {
 	width: 100%;
 }
 
 .profile .container div.right table td,
+.edit-profile .container div.right table td,
 .account .container div.right table td,
 .new-message .message-list-content div.right table td {
 	padding: 18px 5px;
@@ -319,18 +324,23 @@ table button {
 	border-radius: 3px;
 }
 
-.profile .left img {
+.profile .left img, 
+.edit-profile .left img
+ {
 	width: 150px;
 	height: 150px;
 	object-fit: cover;
 }
 
 .profile .left,
+.edit-profile .left,
 .account .left {
 	margin: 20px 0px;
 }
 
-.profile .left>label {
+.profile .left>label,
+.edit-profile .left>label
+ {
 	display: block;
 	text-decoration: underline;
 	margin: 5px;
@@ -338,11 +348,14 @@ table button {
 	width: fit-content;
 }
 
-.profile .left>label>input {
+.profile .left>label>input,
+.edit-profile .left>label>input
+ {
 	display: none;
 }
 
 .profile .error-message,
+.edit-profile .error-message,
 .account .error-message,
 .new-message .error-message {
 	margin-top: 10px;
@@ -494,4 +507,19 @@ nav ul li.active {
 	color: var(---default);
 	background-color: var(---primary);
 	border-radius: 3px;
+}
+
+.my-rpofile-container{
+	width: 100%;
+	max-width: 600px;
+}
+
+.my-rpofile-image{
+	display: flex;
+	column-gap: 20px;
+}
+
+.other-profile-info table tr td {
+	padding: 6px 13px;
+	padding-left: 0px !important;
 }

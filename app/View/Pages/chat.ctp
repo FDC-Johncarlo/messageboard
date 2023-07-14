@@ -1,11 +1,9 @@
 <div class="wrapper">
-    <span>Welcome To</span>
-    <h1>Message Board</h1>
     <?php echo $this->element('nav'); ?>
     <div class="breadcrumb">
         <ul>
             <li><a href="<?= Configure::read("BASE_URL") ?>/home">Home</a></li>
-            <li>Message details with <b><?= $details["userAccount"]["name"] ?></b></li>
+            <li>Message details with <b id="name-of-recip"><?= $details["userAccount"]["name"] ?></b></li>
         </ul>
     </div>
     <hr class="divider">
@@ -21,8 +19,12 @@
         </div>
         <div class="main-list">
             <?php
+            $chatLimit = 5;
             $chat = array_reverse(json_decode($details["message"]));
+            $countChat = 0;
             foreach ($chat as $key => $value) :
+                $countChat++;
+                if($countChat <= $chatLimit):
             ?>
                 <div class="card-list <?= $currentUser ==  $value->from ? "me-chat" : "not-me" ?>" data-ref="<?= $value->ref ?>">
                     <?php if ($currentUser ==  $value->from) : ?>
@@ -62,7 +64,12 @@
                         </div>
                     <?php endif; ?>
                 </div>
-            <?php endforeach; ?>
+            <?php endif; endforeach; ?>
+            <?php if ($countChat > $chatLimit) : ?>
+                <div style="text-align: center; margin: 20px 0px;">
+                    <button id="show-more">Show More</button>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

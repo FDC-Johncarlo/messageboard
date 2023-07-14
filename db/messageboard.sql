@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 13, 2023 at 11:58 AM
+-- Generation Time: Jul 14, 2023 at 11:41 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -40,12 +40,8 @@ CREATE TABLE `message` (
 --
 
 INSERT INTO `message` (`id`, `pair_one`, `pair_two`, `message`, `last_update`) VALUES
-(65, 8, 7, '[{\"ref\":\"CHAT-0jw2utwpigwsmm2csvop\",\"from\":8,\"message\":\"3\",\"date_push\":\"2023-07-13 15:09:26\"}]', '2023-07-13 15:09:26'),
-(68, 8, 11, '[{\"ref\":\"CHAT-ugyyxchhtmzarclfwduy\",\"from\":8,\"message\":\"6\",\"date_push\":\"2023-07-13 15:09:39\"},{\"ref\":\"CHAT-trpynsd7l8iyzycnyq2z\",\"from\":8,\"message\":\"32\",\"date_push\":\"2023-07-13 15:12:19\"},{\"ref\":\"CHAT-actmy6aimseop2ly9aoy\",\"from\":11,\"message\":\"wakay klaro ou\",\"date_push\":\"2023-07-13 16:44:39\"},{\"ref\":\"CHAT-pityoscvlcpdx5vqp6kn\",\"from\":8,\"message\":\"ikaw way klaro\",\"date_push\":\"2023-07-13 16:58:36\"},{\"ref\":\"CHAT-3lqy1mgbz4xoplhjooc0\",\"from\":11,\"message\":\"Ikaw ranang wala ni butho sa atong sabot oy\",\"date_push\":\"2023-07-13 16:59:00\"},{\"ref\":\"CHAT-oig1pit7vc1wgwbe4c9a\",\"from\":8,\"message\":null,\"date_push\":\"2023-07-13 17:46:21\"},{\"ref\":\"CHAT-uevzxwvn4ongt2dnbg63\",\"from\":8,\"message\":\"test\",\"date_push\":\"2023-07-13 17:46:58\"},{\"ref\":\"CHAT-zjihq6q0zmzbqobnttvf\",\"from\":8,\"message\":\"yaya\",\"date_push\":\"2023-07-13 17:47:03\"}]', '2023-07-13 17:47:03'),
-(70, 8, 5, '[{\"ref\":\"CHAT-y3yeigmmrxipvk59hgzw\",\"from\":8,\"message\":\"1\",\"date_push\":\"2023-07-13 15:10:19\"}]', '2023-07-13 15:10:19'),
-(71, 8, 6, '[{\"ref\":\"CHAT-ur4s6atjnwachcnx9yaf\",\"from\":8,\"message\":\"1\",\"date_push\":\"2023-07-13 15:10:39\"},{\"ref\":\"CHAT-lxt2ocqqdgyltcozlqsg\",\"from\":8,\"message\":\"312\",\"date_push\":\"2023-07-13 15:12:23\"}]', '2023-07-13 15:12:23'),
-(72, 8, 10, '[{\"ref\":\"CHAT-ojf8abqrxts4ps4yffvo\",\"from\":8,\"message\":\"321\",\"date_push\":\"2023-07-13 15:12:27\"}]', '2023-07-13 15:12:27'),
-(73, 8, 12, '[{\"ref\":\"CHAT-dyjlrvskir9kmhjj7sdc\",\"from\":8,\"message\":\"dsadas\",\"date_push\":\"2023-07-13 15:45:48\"},{\"ref\":\"CHAT-kwmeq12jp1d90fbzfawh\",\"from\":8,\"message\":\"okay rakas record nga 6 - 7?\",\"date_push\":\"2023-07-13 17:48:10\"},{\"ref\":\"CHAT-zudhr8fbrth90v60k5n6\",\"from\":8,\"message\":\"ahaha\",\"date_push\":\"2023-07-13 17:54:15\"}]', '2023-07-13 17:54:15');
+(75, 13, 14, '[{\"ref\":\"CHAT-6148qxncxd0ihzxiyd2n\",\"from\":13,\"message\":\"Hidsadasdsa\",\"date_push\":\"2023-07-14 15:35:57\"},{\"ref\":\"CHAT-tesk6k6ygylihnq3djyp\",\"from\":14,\"message\":\"dasdasddasdasdsadasdas\",\"date_push\":\"2023-07-14 15:36:00\"}]', '2023-07-14 15:36:00'),
+(76, 13, 15, '[{\"ref\":\"CHAT-rif1jyoczkl2qrmkew3p\",\"from\":13,\"message\":\"hahaha\",\"date_push\":\"2023-07-14 15:58:47\"}]', '2023-07-14 15:58:47');
 
 -- --------------------------------------------------------
 
@@ -57,22 +53,18 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `name` varchar(500) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `password` varchar(500) NOT NULL
+  `password` varchar(500) NOT NULL,
+  `date_register` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`) VALUES
-(5, 'Ka chat', 'test1@gmail.com', '57d047767950b5ee6de9c9a1d77d35d8aff840b4'),
-(6, 'Test', 'test2@gmail.com', '57d047767950b5ee6de9c9a1d77d35d8aff840b4'),
-(7, 'Test', 'test3@gmail.com', '57d047767950b5ee6de9c9a1d77d35d8aff840b4'),
-(8, 'FDCI-JOHN', 'fdc.johncarloy@gmail.com', '57d047767950b5ee6de9c9a1d77d35d8aff840b4'),
-(9, 'johncarlo', 'prospteam@gmail.com', '57d047767950b5ee6de9c9a1d77d35d8aff840b4'),
-(10, 'test2', 'test@gmail.com', '57d047767950b5ee6de9c9a1d77d35d8aff840b4'),
-(11, 'johncarlo.ylanan', 'joh@gmail.com', '7965f326cdd2c5baac185fdcb963ca758fdd311c'),
-(12, 'Christian Melendres', 'christian@gmail.com', '57d047767950b5ee6de9c9a1d77d35d8aff840b4');
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `date_register`) VALUES
+(13, 'John Carlo A. Ylanan', 'johncarlo.ylanan@gmail.com', '6f525405380da0d3bda319203a111ba5355ebad3', '2023-07-14'),
+(14, 'Christian Melendres', 'christianupdate@gmail.com', '4f6236fc02a5f738da5b8cd6b9c6210372afb5f6', '2023-07-14'),
+(15, 'Test User', 'test@gmail.com', '57d047767950b5ee6de9c9a1d77d35d8aff840b4', '2023-07-14');
 
 -- --------------------------------------------------------
 
@@ -83,7 +75,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`) VALUES
 CREATE TABLE `users_data` (
   `id` int(11) NOT NULL,
   `fk_id` int(11) NOT NULL,
-  `birth_date` date DEFAULT NULL,
+  `birth_date` varchar(100) DEFAULT NULL,
   `gender` varchar(10) DEFAULT NULL,
   `hubby` longtext DEFAULT NULL,
   `profile` varchar(100) DEFAULT NULL
@@ -94,8 +86,8 @@ CREATE TABLE `users_data` (
 --
 
 INSERT INTO `users_data` (`id`, `fk_id`, `birth_date`, `gender`, `hubby`, `profile`) VALUES
-(1, 8, '2014-07-14', 'Female', 'Test Hubby', 'Profile-1689127001.gif'),
-(2, 5, '0000-00-00', 'Female', 'Wala lonely girl rako', 'Profile-1689218060.jpg');
+(3, 13, '07/14/1999', 'Male', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 'Profile-1689314859.gif'),
+(4, 14, '07/14/1999', 'Female', 'Programming | UI | UX', 'Profile-1689314888.jpg');
 
 -- --------------------------------------------------------
 
@@ -114,11 +106,8 @@ CREATE TABLE `users_login_logs` (
 --
 
 INSERT INTO `users_login_logs` (`id`, `fk_id`, `last_login_time`) VALUES
-(8, 7, '2023-07-10 14:33:35'),
-(9, 8, '2023-07-13 17:24:17'),
-(10, 11, '2023-07-13 13:38:31'),
-(11, 6, '2023-07-12 17:11:28'),
-(12, 5, '2023-07-13 11:13:44');
+(13, 14, '2023-07-14 17:10:02'),
+(14, 13, '2023-07-14 17:15:51');
 
 --
 -- Indexes for dumped tables
@@ -156,25 +145,25 @@ ALTER TABLE `users_login_logs`
 -- AUTO_INCREMENT for table `message`
 --
 ALTER TABLE `message`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `users_data`
 --
 ALTER TABLE `users_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users_login_logs`
 --
 ALTER TABLE `users_login_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

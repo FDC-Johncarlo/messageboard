@@ -1,6 +1,4 @@
 <div class="wrapper">
-    <span>Welcome To</span>
-    <h1>Message Board</h1>
     <?php echo $this->element('nav'); ?>
     <div class="breadcrumb">
         <ul>
